@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chungus Games</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chungus">
+<meta name="theme-color" content="#2a2160">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Nunito:wght@700;800;900&display=swap">
+<style>
+:root {
+  --ink: #1b1440; --bg: #2a2160; --panel: rgba(27, 20, 64, 0.74); --edge: rgba(255, 255, 255, 0.14);
+  --cream: #fff6e4; --muted: #cfc6f2; --gold: #ffcf4d; --pink: #ff8fd1; --cyan: #7ef0ff;
+  --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --ui: "Nunito", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg); }
+body { margin: 0; min-height: 100vh; color: var(--cream); font-family: var(--ui);
+  background: radial-gradient(120% 80% at 50% -10%, #5b3fa8 0%, #2a2160 55%, #1b1440 100%) fixed;
+  padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  -webkit-tap-highlight-color: transparent; }
+main { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+header { text-align: center; display: grid; gap: 6px; }
+h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(48px, 9vw, 96px); line-height: 1;
+  color: var(--gold); text-shadow: 0 4px 0 #ff7aa8, 0 8px 0 #8b5cf6, 0 16px 30px rgba(0,0,0,.35); letter-spacing: .01em; }
+.tag { margin: 10px 0 0; font-size: clamp(18px, 2.6vw, 24px); font-weight: 900; }
+.tag .leo { color: var(--cyan); } .tag .amelia { color: var(--pink); }
+.games { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+a.game { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--panel);
+  border: 1px solid var(--edge); border-radius: 26px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.35);
+  transition: transform .15s ease, box-shadow .15s ease; min-width: 0; }
+a.game:hover, a.game:focus-visible { transform: translateY(-4px); box-shadow: 0 24px 50px rgba(0,0,0,.45); outline: none; }
+a.game:active { transform: scale(.98); }
+.shot { position: relative; aspect-ratio: 16 / 10; background: #120d2e; max-width: 100%; }
+.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.badge { position: absolute; top: 14px; left: 14px; font-family: var(--display); font-size: 22px; color: var(--ink);
+  background: var(--c); border-radius: 14px; padding: 4px 14px 2px; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+.body { flex: 1; padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 10px; }
+h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1.05; color: var(--c); }
+.body p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.45; font-weight: 700; }
+.play { align-self: flex-start; margin-top: auto; font-family: var(--display); font-size: 26px; color: var(--ink);
+  background: var(--c); border-radius: 999px; padding: 8px 30px 6px; box-shadow: 0 5px 0 rgba(0,0,0,.28); }
+details { background: var(--panel); border: 1px solid var(--edge); border-radius: 20px; padding: 16px 22px; color: var(--muted); }
+summary { cursor: pointer; font-weight: 900; color: var(--cream); font-size: 18px; }
+details ol { margin: 12px 0 4px; padding-left: 22px; line-height: 1.6; font-weight: 700; }
+details p { margin: 8px 0 0; line-height: 1.5; font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Chungus</h1>
+    <p class="tag"><span class="leo">Leo</span> &amp; <span class="amelia">Amelia</span>'s games</p>
+  </header>
+  <section class="games">
+    <a class="game" href="part1/" style="--c: #ff9ec9">
+      <div class="shot"><img src="part1/card.webp" alt="Chungus screenshot" width="800" height="500" loading="lazy"><span class="badge">1</span></div>
+      <div class="body"><h2>Chungus</h2><p>Leo &amp; Amelia and the Magic Isles: collect stars, open treasure chests, make unicorn friends and find the three Moon Keys.</p><span class="play">Play</span></div>
+    </a>
+    <a class="game" href="part2/" style="--c: #7ef0ff">
+      <div class="shot"><img src="part2/card.webp" alt="Chungus 2 screenshot" width="800" height="500" loading="lazy"><span class="badge">2</span></div>
+      <div class="body"><h2>Chungus 2</h2><p>Leo &amp; Amelia and the Wish Gem: turn into fairies, mermaids and dragons to grant three magical wishes.</p><span class="play">Play</span></div>
+    </a>
+    <a class="game" href="hd/" style="--c: #ffcf4d">
+      <div class="shot"><img src="hd/card.webp" alt="Chungus HD screenshot" width="800" height="500" loading="lazy"><span class="badge">HD</span></div>
+      <div class="body"><h2>Chungus HD</h2><p>The Wish Gem adventure in high detail. The most beautiful one; best on newer iPads.</p><span class="play">Play</span></div>
+    </a>
+  </section>
+  <details>
+    <summary>For grown-ups: putting a game on the iPad's Home Screen</summary>
+    <ol>
+      <li>Open the game in Safari (tap its card).</li>
+      <li>Tap the Share button, then <b>Add to Home Screen</b>, then <b>Add</b>.</li>
+      <li>The game gets its own icon and opens full screen from it. Each game saves its progress on that iPad.</li>
+    </ol>
+    <p>Chungus HD is the most detailed and needs the most memory. If it is slow or the page reloads on an older iPad, play Chungus 2: it's the same adventure with simpler graphics.</p>
+  </details>
+</main>
+</body>
+</html>
