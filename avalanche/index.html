@@ -23,7 +23,7 @@
   --plate:#123457; --plate-2:#1b4673; --plate-ink:#ffffff; --plate-soft:#b9cfe6; --tile:#ffffff;
   --accent:#ff6a2b; --accent-ink:#ffffff;
   --gate-red:#e2412f; --trail-green:#23955a; --trail-blue:#2160c9; --diamond:#14181d;
-  --bg:#d6ebf8; --scrim:rgba(14,40,68,.28); --shadow:rgba(9,28,52,.35);
+  --bg:#d6ebf8; --scrim:rgba(14,40,68,.28); --shadow:rgba(9,28,52,.35); --vignette:rgba(16,48,86,.16);
   --font-display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
   --font-ui:"Barlow Condensed","Roboto Condensed","Arial Narrow",system-ui,sans-serif;
   --font-body:"Barlow Semi Condensed","Barlow","Segoe UI",system-ui,sans-serif;
@@ -32,14 +32,14 @@
   --sky-top:#030817; --sky-low:#1a2d50; --snow:#c4d4e8; --snow-far:#4d6688; --snow-shade:#7f99bb;
   --mountain:#1d3254; --mountain-far:#273f63; --night:1;
   --plate:#0a1d34; --plate-2:#13325a; --plate-ink:#f2f7fc; --plate-soft:#8fb0d3; --tile:#eef4fa;
-  --accent:#ff8547; --accent-ink:#1b0d05; --bg:#0b1830; --scrim:rgba(2,8,20,.45); --shadow:rgba(0,0,0,.5);
+  --accent:#ff8547; --accent-ink:#1b0d05; --bg:#0b1830; --scrim:rgba(2,8,20,.45); --shadow:rgba(0,0,0,.5); --vignette:rgba(2,6,16,.45);
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --sky-top:#030817; --sky-low:#1a2d50; --snow:#c4d4e8; --snow-far:#4d6688; --snow-shade:#7f99bb;
   --mountain:#1d3254; --mountain-far:#273f63; --night:1;
   --plate:#0a1d34; --plate-2:#13325a; --plate-ink:#f2f7fc; --plate-soft:#8fb0d3; --tile:#eef4fa;
-  --accent:#ff8547; --accent-ink:#1b0d05; --bg:#0b1830; --scrim:rgba(2,8,20,.45); --shadow:rgba(0,0,0,.5);
+  --accent:#ff8547; --accent-ink:#1b0d05; --bg:#0b1830; --scrim:rgba(2,8,20,.45); --shadow:rgba(0,0,0,.5); --vignette:rgba(2,6,16,.45);
   color-scheme:dark;
 }
 html,body{height:100%;overflow:hidden;overscroll-behavior:none}
@@ -48,6 +48,7 @@ body{background:var(--bg);color:var(--plate-ink);font-family:var(--font-body);
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 button{touch-action:manipulation}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;background:var(--snow)}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 55%,rgba(8,24,48,0) min(35vw,35vh),var(--vignette) max(80vw,80vh))}
 .layer{position:fixed;inset:0;pointer-events:none;
   padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px))}
 
@@ -127,6 +128,7 @@ button{touch-action:manipulation}
 </style>
 
 <canvas id="cv" aria-label="Snowy slope with your snowball rolling downhill"></canvas>
+<div id="vignette" aria-hidden="true"></div>
 
 <div id="hud" class="layer" hidden>
   <div class="hud-l">
@@ -512,7 +514,7 @@ function update(dt) {
   if (S.mode === 'dying') { updateDying(dt); updateParticles(dt); return; }
 
   const base = Math.min(29, 13 + (S.level - 1) * 1.6);
-  b.spdMul = Math.min(1, b.spdMul + dt * 0.7);
+  b.spdMul = Math.min(1, b.spdMul + dt * 1.2);
   b.spd = base * (1 + 0.045 * (b.r - CFG.R0)) * b.spdMul;
   const prevZ = b.z;
   b.z += b.spd * dt;
@@ -657,10 +659,10 @@ function hurt(o) {
   const fr = o.t === 'cabin' ? 0.24 : o.t === 'rock' ? 0.17 : 0.13;
   const mn = o.t === 'cabin' ? 0.18 : o.t === 'rock' ? 0.13 : 0.1;
   b.r -= Math.max(mn, b.r * fr);
-  b.inv = 0.7; b.spdMul = 0.55; b.squash = 1;
+  b.inv = 0.7; b.spdMul = 0.8; b.squash = 1;
   const away = Math.sign(b.x - o.x) || (Math.random() < 0.5 ? -1 : 1);
   b.vx = away * 9; b.targetX = b.x + away * 2.5;
-  S.shake = 1; S.flash = 0.7; S.combo = 0; S.comboT = 0;
+  S.shake = 0.6; S.combo = 0; S.comboT = 0;
   b.stuck.splice(0, Math.min(b.stuck.length, 3 + ((b.stuck.length * 0.25) | 0)));
   burst(b.x, b.y + b.rEff, b.z + b.rEff * 0.5, 24, 'snow', b.rEff);
   if (o.t === 'tree') burst(o.x, o.h * 0.7, o.z, 14, 'puff', 1.4);
@@ -819,7 +821,7 @@ function aiSteer() {
 /* ================= renderer: pseudo-3D slope, sprites, effects ================= */
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
-const V = { W: 360, H: 640, dpr: 1, F: 300, hy: 180, camX: 0, camZ: -10, camH: 8, camBack: 9, bank: 0, ready: false };
+const V = { W: 360, H: 640, dpr: 1, F: 300, hy: 180, camX: 0, camZ: -10, camH: 8, camBack: 9, bank: 0, ready: false, dt: 0 };
 const PAL = {};
 let ridges = null, stars = null, flakes = null;
 
@@ -845,9 +847,11 @@ function readPalette() {
   });
 }
 
+const PIXEL_BUDGET = 2.6e6;   // canvas pixels; an iPad held sideways would otherwise be 3.9 million
 function resize() {
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
   const W = Math.max(200, cv.clientWidth || window.innerWidth), H = Math.max(200, cv.clientHeight || window.innerHeight);
+  let dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (W * H * dpr * dpr > PIXEL_BUDGET) dpr = Math.max(1, Math.sqrt(PIXEL_BUDGET / (W * H)));
   V.W = W; V.H = H; V.dpr = dpr;
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   V.F = 0.95 * Math.min(W, H * 0.72);
@@ -910,25 +914,27 @@ function updateCamera(dt) {
 /* ---------------- frame ---------------- */
 function drawFrame(dt) {
   const { W, H, dpr } = V, b = S.ball;
+  V.dt = dt || 0;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.globalAlpha = 1;   // never inherit a see-through state from a frame that failed part-way
   const pb = P(b.x, b.rEff, b.z) || { x: W / 2, y: H * 0.74 };
   ctx.save();
-  if (S.shake > 0) ctx.translate(rnd(-1, 1) * S.shake * 7, rnd(-1, 1) * S.shake * 5);
-  ctx.translate(pb.x, pb.y); ctx.rotate(V.bank); ctx.translate(-pb.x, -pb.y);
-  drawSky();
-  drawGround();
-  drawFlat();
-  drawTrail();
-  drawShadows();
-  drawSprites();
-  drawParticles();
-  drawTexts();
-  ctx.restore();
+  try {
+    if (S.shake > 0) ctx.translate(rnd(-1, 1) * S.shake * 7, rnd(-1, 1) * S.shake * 5);
+    ctx.translate(pb.x, pb.y); ctx.rotate(V.bank); ctx.translate(-pb.x, -pb.y);
+    drawSky();
+    drawGround();
+    drawFlat();
+    // (no drawTrail: the grey furrow behind the ball read as a shadow streaking down the screen)
+    drawShadows();
+    drawSprites();
+    drawParticles();
+    drawTexts();
+  } finally {
+    ctx.restore();
+  }
   drawSnowfall(dt);
-  if (S.flash > 0) { ctx.fillStyle = `rgba(255,96,64,${S.flash * 0.22})`; ctx.fillRect(0, 0, W, H); }
-  const vg = ctx.createRadialGradient(W / 2, H * 0.55, Math.min(W, H) * 0.35, W / 2, H * 0.55, Math.max(W, H) * 0.8);
-  vg.addColorStop(0, 'rgba(8,24,48,0)'); vg.addColorStop(1, PAL.night ? 'rgba(2,6,16,.45)' : 'rgba(16,48,86,.16)');
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  // the vignette is the #vignette layer in CSS: as a canvas gradient it cost a third of every frame
 }
 
 function drawSky() {
@@ -981,9 +987,11 @@ function drawSky() {
 
 function drawGround() {
   const { W, H, hy } = V;
-  const g = ctx.createLinearGradient(0, hy, 0, H);
-  g.addColorStop(0, PAL.snowFar); g.addColorStop(0.3, PAL.snow); g.addColorStop(1, PAL.snow);
-  ctx.fillStyle = g; ctx.fillRect(-W, hy, W * 3, H * 2);
+  const band = (H - hy) * 0.3;   // the far-snow gradient only where it changes; the rest is a plain (fast) fill
+  ctx.fillStyle = PAL.snow; ctx.fillRect(-W, hy + band - 1, W * 3, H * 2);
+  const g = ctx.createLinearGradient(0, hy, 0, hy + band);
+  g.addColorStop(0, PAL.snowFar); g.addColorStop(1, PAL.snow);
+  ctx.fillStyle = g; ctx.fillRect(-W, hy, W * 3, band);
   // wind ripples
   ctx.fillStyle = PAL.shade;
   const z0 = Math.ceil((V.camZ + 2) / 3) * 3;
@@ -997,7 +1005,9 @@ function drawGround() {
   for (let z = Math.ceil(V.camZ / 6) * 6; z < V.camZ + CFG.FAR * 0.8; z += 6) {
     for (let k = 0; k < 2; k++) {
       const x = (hash(z * 1.3 + k * 9) - 0.5) * CFG.HW * 2.6;
-      ctx.globalAlpha = 0.13;
+      const near = clamp((z + k * 3 - V.camZ - 4) / 10, 0, 1);   // close up they were big grey blotches
+      if (near <= 0) continue;
+      ctx.globalAlpha = 0.1 * near;
       if (groundEllipse(x, z + k * 3, 2.2 + hash(z + k) * 2, 0.9)) ctx.fill();
     }
   }
@@ -1065,12 +1075,14 @@ function drawCrevasse(o) {
   ctx.beginPath(); near.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.stroke();
 }
 
-function drawTrail() {
+function drawTrail() {   // not drawn any more; kept in case the furrow comes back in a lighter form
   const tr = S.trail; if (tr.length < 2) return;
-  ctx.fillStyle = PAL.shade; ctx.globalAlpha = PAL.night ? 0.24 : 0.2;
+  const base = PAL.night ? 0.22 : 0.18, bz = S.ball.z, len = 6 + S.ball.rEff * 2;
   for (let i = 1; i < tr.length; i++) {
     const a = tr[i - 1], c = tr[i];
     if (a.cut || c.cut || c.z < V.camZ + 0.5) continue;
+    const k = 1 - (bz - c.z) / len; if (k <= 0) continue;
+    ctx.globalAlpha = base * Math.min(1, k * 1.6);
     const w1 = a.w * 0.58, w2 = c.w * 0.58;
     poly([Pg(a.x - w1, 0, a.z), Pg(a.x + w1, 0, a.z), Pg(c.x + w2, 0, c.z), Pg(c.x - w2, 0, c.z)], PAL.shade);
   }
@@ -1101,8 +1113,18 @@ function drawShadows() {
   ctx.globalAlpha = 1;
 }
 
+// would this object, drawn in front of the ball, cover it? (screen boxes overlap)
+function hidesBall(o, p, pb) {
+  if (!pb || S.ball.gone) return false;
+  const R = S.ball.rEff * pb.s;
+  const hw = (o.t === 'cabin' ? o.w / 2 + 0.6 : o.t === 'tree' || o.t === 'pine' ? 1.4 : o.fx || o.r || 0.6) * p.s;
+  const top = p.y - (o.t === 'cabin' ? o.h + o.rh : o.h || 1.5) * p.s;
+  return p.x + hw > pb.x - R && p.x - hw < pb.x + R && p.y > pb.y - R && top < pb.y + R;
+}
+
 function drawSprites() {
   const b = S.ball, list = [];
+  const pb = P(b.x, b.y + b.rEff - b.sink * b.rEff * 1.7 + b.fallY, b.z);
   for (const o of S.objs) {
     if (o.dead || o.t === 'pond' || o.t === 'crev') continue;
     const dz = o.z - V.camZ; if (dz < 0.6 || dz > CFG.FAR) continue;
@@ -1115,7 +1137,13 @@ function drawSprites() {
     if (o === BALL_MARK) { drawBall(); continue; }
     const p = o.t === 'bird' ? P(o.x, o.y, o.z) : P(o.x, 0, o.z); if (!p) continue;
     let a = clamp((CFG.FAR - p.dz) / 25, 0, 1);
-    if (o.z < b.z - b.rEff * 0.3) a *= clamp((o.z - V.camZ) / V.camBack - 0.15, 0.08, o.deco ? 1 : 0.55);
+    if (o.z < b.z) {
+      // Passed things used to turn into see-through ghosts that drifted down the screen. Now they stay solid;
+      // one that would hide the ball eases to see-through, and anything about to brush the camera fades out.
+      const want = hidesBall(o, p, pb) ? 0.35 : 1;
+      o.see = o.see === undefined ? want : lerp(o.see, want, Math.min(1, V.dt * 10));
+      a *= o.see * clamp((p.dz - 0.8) / 2.2, 0, 1);
+    }
     ctx.globalAlpha = a;
     switch (o.t) {
       case 'pine': drawPine(p.x, p.y, p.s, o.h, 0); break;
@@ -1183,6 +1211,10 @@ function drawCabin(o) {
   const ftl = P(x0, h, zf), ftr = P(x1, h, zf), bl = P(x0, 0, zb), br = P(x1, 0, zb), btl = P(x0, h, zb), btr = P(x1, h, zb);
   const rf = P(o.x, h + rh, zf - ov), rb = P(o.x, h + rh, zb + ov), apex = P(o.x, h + rh, zf);
   const elf = P(x0 - ov, h - 0.3, zf - ov), erf = P(x1 + ov, h - 0.3, zf - ov), elb = P(x0 - ov, h - 0.3, zb + ov), erb = P(x1 + ov, h - 0.3, zb + ov);
+  // As a cabin passes the camera its roof overhang (half a metre nearer than the walls) goes behind the camera
+  // and doesn't project. Drawing it anyway threw half-way through the frame and left the canvas stuck
+  // see-through, so every later frame smeared over the last: the "shadowy slow-motion" look. Skip those frames.
+  if (!rf || !elf || !erf) return;
   if (V.camX < x0) poly([fl, bl, btl, ftl], PAL.logShade);
   if (V.camX > x1) poly([fr, br, btr, ftr], PAL.logShade);
   poly([fl, fr, ftr, apex, ftl], PAL.log);
@@ -1366,7 +1398,6 @@ function drawBall() {
   ctx.save();
   if (b.sink > 0) { const gy = P(b.x, 0, b.z); if (gy) { ctx.beginPath(); ctx.rect(p.x - R * 3, gy.y - R * 6, R * 6, R * 6 + R * 0.15); ctx.clip(); } }
   if (b.fallY < 0) ctx.globalAlpha = clamp(1 + b.fallY / (b.rEff * 3), 0, 1);
-  if (b.inv > 0 && Math.floor(S.t * 18) % 2) ctx.globalAlpha *= 0.5;
   ctx.translate(p.x, p.y);
   const sq = b.squash;
   ctx.translate(0, R); ctx.scale(1 + sq * 0.16, 1 - sq * 0.18); ctx.translate(0, -R);
@@ -1603,10 +1634,13 @@ let lastT = performance.now();
 function frame(now) {
   let dt = (now - lastT) / 1000; lastT = now;
   if (!(dt > 0)) dt = 1 / 60;
-  dt = Math.min(dt, 1 / 30);
+  // A slow frame used to be clamped to 1/30 s, so when the screen couldn't keep up the whole game ran in slow
+  // motion. Now it is split into steps of at most 1/60 s (collisions stay exact) and the slope keeps real time;
+  // only a long stall (a hidden tab, a hiccup) is cut short.
+  dt = Math.min(dt, 0.1);
   try {
     if (S.mode === 'play' || S.mode === 'dying' || S.mode === 'title') {
-      const n = dt > 1 / 50 ? 2 : 1;
+      const n = Math.max(1, Math.ceil(dt * 60 - 0.05));
       for (let i = 0; i < n && (S.mode === 'play' || S.mode === 'dying' || S.mode === 'title'); i++) update(dt / n);
     } else if (S.mode === 'over') updateParticles(dt);
     if (S.mode !== 'paused') updateCamera(dt);
