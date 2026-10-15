@@ -55,6 +55,16 @@ h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 34px; 
   .games { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
   .body { padding: 16px 18px 20px; } h2 { font-size: 30px; } .body p { font-size: 16px; }
   .play { font-size: 24px; padding: 8px 26px 6px; } }
+/* the featured game spans the whole row; picture beside the words once there is room */
+a.game.featured { grid-column: 1 / -1; }
+@media (min-width: 760px) {
+  a.game.featured { flex-direction: row; }
+  a.game.featured .shot { flex: 0 0 56%; aspect-ratio: auto; min-height: 100%; }
+  a.game.featured .shot img { object-position: 22% 50%; }   /* keep Leo in view when the picture is cropped */
+  a.game.featured .body { padding: 28px 32px 30px; justify-content: center; gap: 14px; }
+  a.game.featured h2 { font-size: clamp(38px, 4.2vw, 54px); }
+  a.game.featured .body p { font-size: 18px; max-width: 34em; }
+  a.game.featured .play { margin-top: 6px; } }
 details { background: var(--panel); border: 1px solid var(--edge); border-radius: 20px; padding: 16px 22px; color: var(--muted); }
 summary { cursor: pointer; font-weight: 900; color: var(--cream); font-size: 18px; }
 details ol { margin: 12px 0 4px; padding-left: 22px; line-height: 1.6; font-weight: 700; }
@@ -68,6 +78,10 @@ details p { margin: 8px 0 0; line-height: 1.5; font-weight: 700; }
     <p class="tag"><span class="leo">Leo</span> &amp; <span class="amelia">Amelia</span>'s games</p>
   </header>
   <section class="games">
+    <a class="game featured" href="reef/" style="--c: #5fe3c8">
+      <div class="shot"><img src="reef/card.webp" alt="Leo&#x27;s Reef Crew screenshot" width="800" height="500" loading="lazy"><span class="badge">New</span></div>
+      <div class="body"><h2>Leo&#x27;s Reef Crew</h2><p>Leo is the boss of an undersea construction crew! Follow the Captain&#x27;s orders, load the dump truck, fix roads for the RC car and patrol the reef. Finish the day&#x27;s jobs and the crew builds something new in Reef Town.</p><span class="play">Play</span></div>
+    </a>
     <a class="game" href="part1/" style="--c: #ff9ec9">
       <div class="shot"><img src="part1/card.webp" alt="Chungus screenshot" width="800" height="500" loading="lazy"><span class="badge">1</span></div>
       <div class="body"><h2>Chungus</h2><p>Leo &amp; Amelia and the Magic Isles: collect stars, open treasure chests, make unicorn friends and find the three Moon Keys.</p><span class="play">Play</span></div>
@@ -92,6 +106,7 @@ details p { margin: 8px 0 0; line-height: 1.5; font-weight: 700; }
       <li>Tap the Share button, then <b>Add to Home Screen</b>, then <b>Add</b>.</li>
       <li>The game gets its own icon and opens full screen from it. Each game saves its progress on that iPad.</li>
     </ol>
+    <p>Leo's Reef Crew is made for about 10–15 minutes a day: when all of the day's jobs are done, the crew adds a new building to Reef Town (21 in all). Press and hold the gear in its top corner for the grown-ups page with his progress and the voice settings.</p>
     <p>Chungus HD is the most detailed and needs the most memory. If it is slow or the page reloads on an older iPad, play Chungus 2: it's the same adventure with simpler graphics.</p>
   </details>
 </main>
