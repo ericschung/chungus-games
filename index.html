@@ -46,6 +46,7 @@ a.game:active { transform: scale(.98); }
 .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .badge { position: absolute; top: 14px; left: 14px; font-family: var(--display); font-size: 22px; color: var(--ink);
   background: var(--c); border-radius: 14px; padding: 4px 14px 2px; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+.badge:empty { display: none; }
 .body { flex: 1; padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 10px; }
 h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1.05; color: var(--c); }
 .body p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.45; font-weight: 700; }
@@ -78,8 +79,12 @@ details p { margin: 8px 0 0; line-height: 1.5; font-weight: 700; }
     <p class="tag"><span class="leo">Leo</span> &amp; <span class="amelia">Amelia</span>'s games</p>
   </header>
   <section class="games">
+    <a class="game featured" href="rally/" style="--c: #ffd23f">
+      <div class="shot"><img src="rally/card.webp" alt="Leo&#x27;s Whisker Rally screenshot" width="800" height="500" loading="lazy"><span class="badge">New</span></div>
+      <div class="body"><h2>Leo&#x27;s Whisker Rally</h2><p>Leo is the new driver on a racing team of kittens, bunnies and puppies! Build and paint his own race car, stack blocks into ramps and bridges, crack mysteries at the track, count along the road and race for the cup across four lands, from Carrot Farm to the Beach Boardwalk.</p><span class="play">Play</span></div>
+    </a>
     <a class="game featured" href="reef/" style="--c: #5fe3c8">
-      <div class="shot"><img src="reef/card.webp" alt="Leo&#x27;s Reef Crew screenshot" width="800" height="500" loading="lazy"><span class="badge">New</span></div>
+      <div class="shot"><img src="reef/card.webp" alt="Leo&#x27;s Reef Crew screenshot" width="800" height="500" loading="lazy"><span class="badge"></span></div>
       <div class="body"><h2>Leo&#x27;s Reef Crew</h2><p>Leo is the boss of an undersea construction crew! Twenty games with their own characters: make pizzas, pop number bubbles, follow treasure maps, play in the band, drive the crane and more. Finish the day&#x27;s jobs and the crew builds something new in Reef Town.</p><span class="play">Play</span></div>
     </a>
     <a class="game" href="part1/" style="--c: #ff9ec9">
@@ -110,6 +115,7 @@ details p { margin: 8px 0 0; line-height: 1.5; font-weight: 700; }
       <li>Tap the Share button, then <b>Add to Home Screen</b>, then <b>Add</b>.</li>
       <li>The game gets its own icon and opens full screen from it. Each game saves its progress on that iPad.</li>
     </ol>
+    <p>Leo's Whisker Rally is made for about 15 minutes a day: each day is a stop on the rally with a few short games and a drive, and when they are done the team drives on to the next stop (21 in all, with a cup race at the end of each land). He can play any game from All games too. Press and hold the gear in its top corner for the grown-ups page with his progress and ideas to try together away from the screen.</p>
     <p>Leo's Reef Crew is made for about 10–15 minutes a day: when all of the day's jobs are done, the crew adds a new building to Reef Town (21 in all). Press and hold the gear in its top corner for the grown-ups page with his progress and a sound check.</p>
     <p>Chungus HD is the most detailed and needs the most memory. If it is slow or the page reloads on an older iPad, play Chungus 2: it's the same adventure with simpler graphics.</p>
   </details>
